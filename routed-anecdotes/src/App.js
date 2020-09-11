@@ -81,9 +81,10 @@ const CreateNew = (props) => {
   }
 
   const resetFields = () => {
-    content.reset()
-    author.reset()
-    info.reset()
+    const e = { target: { value: '' } }
+    content.onChange(e)
+    author.onChange(e)
+    info.onChange(e)
   }
 
   return (
@@ -105,7 +106,6 @@ const CreateNew = (props) => {
         <button>create</button>
         <button type="button" onClick={() => resetFields()}>reset</button>
       </form>
-
     </div>
   )
 }
