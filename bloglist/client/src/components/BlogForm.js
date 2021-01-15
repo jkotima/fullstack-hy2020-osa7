@@ -21,6 +21,7 @@ const BlogForm = () => {
       title: newTitle,
       author: newAuthor,
       url: newUrl,
+      user: JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
     }
 
     dispatch(addBlog(newBlog))

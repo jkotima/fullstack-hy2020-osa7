@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { useDispatch } from 'react-redux'
 
-const Blog = ({ blog, likeBlog, removeBlog, user }) => {
+const Blog = ({ blog, user }) => {
   const [visible, setVisible] = useState(false)
-
+  const dispatch = useDispatch()
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
   const isCurrentUsersBlog = blog.user.username === user.username
@@ -19,6 +21,17 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
     borderWidth: 1,
     marginBottom: 5
   }
+  const removeConfirm = (blog) => {
+    if (!window.confirm(`Remove blog ${blog.title}?`)) {
+      return
+    }
+    dispatch(removeBlog(blog))
+  }
+
+  const likeBlogWithNotification = (blog) => {
+    // todo: notification
+    dispatch(likeBlog(blog))
+  }
 
   return (
     <div id="blog" style={blogStyle}>
@@ -29,9 +42,9 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
       </div>
       <div style={showWhenVisible}>
         {blog.url}<br />
-          likes {blog.likes} <button id="like-button" onClick={() => likeBlog(blog)}>like</button> <br />
+          likes {blog.likes} <button id="like-button" onClick={() => likeBlogWithNotification(blog)}>like</button> <br />
         {blog.user.name}<br />
-        <button id="remove-button" onClick={() => removeBlog(blog)} style={showWhenCurrentUsersBlog}>remove</button>
+        <button id="remove-button" onClick={() => removeConfirm(blog)} style={showWhenCurrentUsersBlog}>remove</button>
       </div>
     </div>
   )
@@ -39,8 +52,6 @@ const Blog = ({ blog, likeBlog, removeBlog, user }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  likeBlog: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 }
 

@@ -50,28 +50,9 @@ const App = () => {
       setTimedNotification('wrong username or password', true)
     }
   }
+  /*
+  const removeBlog = (/*blogObject) => {
 
-  const likeBlog = (/*blogObject*/) => {
-    /*
-    blogObject.likes++
-    blogService
-      .update(blogObject)
-      .then(returnedBlog => {
-        returnedBlog.user = blogObject.user
-
-        setBlogs(
-          blogs
-            .map(blog => blog.id === returnedBlog.id
-              ? returnedBlog
-              : blog)
-            .sort((a, b) => b.likes - a.likes)
-        )
-      })
-      */
-  }
-
-  const removeBlog = (/*blogObject*/) => {
-    /*
     if (!window.confirm(`Remove blog ${blogObject.title}?`)) {
       return
     }
@@ -81,9 +62,9 @@ const App = () => {
       .then(
         setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
       )
-    */
-  }
 
+  }
+    */
   const setTimedNotification = (message, error = false) => {
     dispatch(setNotification({ message, error }))
     setTimeout(() => {
@@ -134,7 +115,7 @@ const App = () => {
             }>logout</button>
           </p>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} likeBlog={likeBlog} removeBlog={removeBlog} user={user} />
+            <Blog key={blog.id} blog={blog} user={user} />
           )}
           <BlogForm />
         </div>
