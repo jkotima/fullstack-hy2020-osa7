@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userService from './services/users'
+
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import { useSelector, useDispatch } from 'react-redux'
@@ -11,6 +13,53 @@ import { setNotification } from './reducers/notificationReducer'
 
 import { initializeBlogs } from './reducers/blogReducer'
 import { setUser } from './reducers/userReducer'
+import {
+  Route, Switch
+} from 'react-router-dom'
+
+const Logout = ({ user }) => (
+  <div>
+    <p>
+      {user.name} logged in
+      <button onClick={() => {
+        window.localStorage.removeItem('loggedBlogappUser')
+        window.location.reload()
+      }
+      }>logout</button>
+    </p>
+  </div>
+)
+
+const Users = () => {
+  const [users, setUsers] = useState([])
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setUsers(await userService.getAll())
+    }
+    fetchUsers()
+  }, [])
+
+  return (
+    <div>
+      <h2>Users</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th></th>
+            <th>blogs created</th>
+          </tr>
+          {users.map(user =>
+            <tr key={user.id}>
+              <td>{user.name}</td>
+              <td>{user.blogs.length}</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+    </div>
+  )
+}
 
 const App = () => {
   const dispatch = useDispatch()
@@ -19,7 +68,6 @@ const App = () => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  //const [user, setUser] = useState(null)
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -52,21 +100,7 @@ const App = () => {
       setTimedNotification('wrong username or password', true)
     }
   }
-  /*
-  const removeBlog = (/*blogObject) => {
 
-    if (!window.confirm(`Remove blog ${blogObject.title}?`)) {
-      return
-    }
-
-    blogService
-      .remove(blogObject)
-      .then(
-        setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
-      )
-
-  }
-    */
   const setTimedNotification = (message, error = false) => {
     dispatch(setNotification({ message, error }))
     setTimeout(() => {
@@ -100,27 +134,33 @@ const App = () => {
   }
  */
 
+
   return (
     <div>
+      <h2>blogs</h2>
+
       <Notification />
+
       {user === null ?
         loginForm() :
+        <>
+          <Logout user={user}/>
+          <Switch>
+            <Route path="/users">
+              <Users />
+            </Route>
 
-        <div>
-          <h2>blogs</h2>
-          <p>
-            {user.name} logged in
-            <button onClick={() => {
-              window.localStorage.removeItem('loggedBlogappUser')
-              window.location.reload()
-            }
-            }>logout</button>
-          </p>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} user={user} />
-          )}
-          <BlogForm />
-        </div>
+            <Route path="/">
+              <div>
+                {blogs.map(blog =>
+                  <Blog key={blog.id} blog={blog} user={user} />
+                )}
+
+                <BlogForm />
+              </div>
+            </Route>
+          </Switch>
+        </>
       }
     </div>
   )

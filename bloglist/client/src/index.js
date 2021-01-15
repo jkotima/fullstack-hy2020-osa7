@@ -6,12 +6,15 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 // import { composeWithDevTools } from 'redux-devtools-extension'
+import {
+  BrowserRouter as Router,
+} from 'react-router-dom'
 
 import notificationReducer from './reducers/notificationReducer'
 import blogReducer from './reducers/blogReducer'
 import userReducer from './reducers/userReducer'
 
-const combinedReducer = combineReducers ({
+const combinedReducer = combineReducers({
   notification: notificationReducer,
   blogs: blogReducer,
   user: userReducer
@@ -20,8 +23,10 @@ const combinedReducer = combineReducers ({
 const store = createStore(combinedReducer, applyMiddleware(thunk))
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <Router>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </Router>,
   document.getElementById('root')
 )
