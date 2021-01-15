@@ -1,4 +1,5 @@
 import blogService from '../services/blogs'
+import { useSelector } from 'react-redux'
 
 const blogReducer = (state = [], action) => {
   switch (action.type) {
@@ -32,7 +33,7 @@ export const initializeBlogs = () => {
 export const addBlog = (blog) => {
   return async dispatch => {
     const returnedBlog = await blogService.create(blog)
-    returnedBlog.user = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
+    returnedBlog.user = useSelector(state => state.user)
     dispatch({
       type: 'ADD_BLOG',
       data: returnedBlog
