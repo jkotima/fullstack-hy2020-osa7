@@ -9,9 +9,9 @@ import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import UserList from './components/UserList'
-import Logout from './components/Logout'
 import User from './components/User'
 import Blog from './components/Blog'
+import Menu from './components/Menu'
 
 import blogService from './services/blogs'
 
@@ -49,7 +49,7 @@ const App = () => {
         ? <LoginForm setTimedNotification={setTimedNotification} />
         :
         <>
-          <Logout loggedInUser={loggedInUser} />
+          <Menu loggedInUser={loggedInUser} />
           <Switch>
             <Route path="/users/:id">
               <User />
