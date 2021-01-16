@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import userService from './services/users'
 
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
@@ -12,10 +11,11 @@ import Togglable from './components/Togglable'
 import { setNotification } from './reducers/notificationReducer'
 
 import { initializeBlogs } from './reducers/blogReducer'
-import { setUser } from './reducers/userReducer'
+import { setUser } from './reducers/loggedInUserReducer'
 import {
-  Route, Switch
+  Switch, Route, Link, useRouteMatch
 } from 'react-router-dom'
+import { initializeUsers } from './reducers/userReducer'
 
 const Logout = ({ user }) => (
   <div>
@@ -31,13 +31,13 @@ const Logout = ({ user }) => (
 )
 
 const Users = () => {
-  const [users, setUsers] = useState([])
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      setUsers(await userService.getAll())
-    }
-    fetchUsers()
-  }, [])
+    dispatch(initializeUsers())
+  }, [initializeUsers])
+
+  const users = useSelector(state => state.users)
 
   return (
     <div>
@@ -50,7 +50,11 @@ const Users = () => {
           </tr>
           {users.map(user =>
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td>
+                <Link to={`/users/${user.id}`}>
+                  {user.name}
+                </Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           )}
@@ -60,11 +64,41 @@ const Users = () => {
     </div>
   )
 }
+const User = () => {
+  const dispatch = useDispatch()
+  const users = useSelector(state => state.users)
+  const userById = id => users.find(u => id === u.id)
+  const match = useRouteMatch('/users/:id')
+  const user = match
+    ? userById(match.params.id)
+    : null
+
+  useEffect(() => {
+    dispatch(initializeUsers())
+  }, [initializeUsers])
+
+  if (!user) {
+    return null
+  }
+  return (
+    <div>
+      <h2>{user.name}</h2>
+      <h4>added blogs</h4>
+      <ul>
+        {user.blogs.map(blog =>
+          <li key={blog.id}>
+            {blog.title}
+          </li>
+        )}
+      </ul>
+    </div>
+  )
+}
 
 const App = () => {
   const dispatch = useDispatch()
   const blogs = useSelector(state => state.blogs)
-  const user = useSelector(state => state.user)
+  const loggedInUser = useSelector(state => state.loggedInUser)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -141,11 +175,14 @@ const App = () => {
 
       <Notification />
 
-      {user === null ?
+      {loggedInUser === null ?
         loginForm() :
         <>
-          <Logout user={user}/>
+          <Logout user={loggedInUser} />
           <Switch>
+            <Route path="/users/:id">
+              <User />
+            </Route>
             <Route path="/users">
               <Users />
             </Route>
@@ -153,7 +190,7 @@ const App = () => {
             <Route path="/">
               <div>
                 {blogs.map(blog =>
-                  <Blog key={blog.id} blog={blog} user={user} />
+                  <Blog key={blog.id} blog={blog} user={loggedInUser} />
                 )}
 
                 <BlogForm />

@@ -12,12 +12,14 @@ import {
 
 import notificationReducer from './reducers/notificationReducer'
 import blogReducer from './reducers/blogReducer'
+import loggedInUserReducer from './reducers/loggedInUserReducer'
 import userReducer from './reducers/userReducer'
 
 const combinedReducer = combineReducers({
   notification: notificationReducer,
   blogs: blogReducer,
-  user: userReducer
+  users: userReducer,
+  loggedInUser: loggedInUserReducer
 })
 
 const store = createStore(combinedReducer, applyMiddleware(thunk))
