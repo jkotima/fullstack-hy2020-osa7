@@ -1,58 +1,55 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React, { useEffect } from 'react'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { useRouteMatch } from 'react-router-dom'
+import { initializeBlogs } from '../reducers/blogReducer'
+import { useHistory } from 'react-router-dom'
 
-const Blog = ({ blog, user }) => {
-  const [visible, setVisible] = useState(false)
+const Blog = ({ loggedInUser, setTimedNotification }) => {
   const dispatch = useDispatch()
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
-  const isCurrentUsersBlog = blog.user.username === user.username
+  const blogs = useSelector(state => state.blogs)
+  const blogById = id => blogs.find(b => id === b.id)
+  const match = useRouteMatch('/blogs/:id')
+  const blog = match
+    ? blogById(match.params.id)
+    : null
+  let isCurrentUsersBlog = blog
+    ? blog.user.username === loggedInUser.username
+    : false
   const showWhenCurrentUsersBlog = { display: isCurrentUsersBlog ? '' : 'none' }
-  const toggleVisibility = () => {
-    setVisible(!visible)
-  }
+  const history = useHistory()
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [initializeBlogs])
+
   const removeConfirm = (blog) => {
     if (!window.confirm(`Remove blog ${blog.title}?`)) {
       return
     }
     dispatch(removeBlog(blog))
+    history.push('/')
+    setTimedNotification(`Removed '${blog.title}'`)
   }
 
   const likeBlogWithNotification = (blog) => {
-    // todo: notification
+    setTimedNotification(`Liked '${blog.title}'`)
     dispatch(likeBlog(blog))
   }
 
+  if (!blog) {
+    return null
+  }
   return (
-    <div id="blog" style={blogStyle}>
-      <div>
-        {blog.title} {blog.author}
-        <button onClick={toggleVisibility} style={hideWhenVisible}>view</button>
-        <button onClick={toggleVisibility} style={showWhenVisible}>hide</button>
-      </div>
-      <div style={showWhenVisible}>
-        {blog.url}<br />
-          likes {blog.likes} <button id="like-button" onClick={() => likeBlogWithNotification(blog)}>like</button> <br />
-        {blog.user.name}<br />
-        <button id="remove-button" onClick={() => removeConfirm(blog)} style={showWhenCurrentUsersBlog}>remove</button>
-      </div>
+    <div>
+      <h1>{blog.title} by {blog.author}</h1>
+      <a href={blog.url}>{blog.url}</a><br />
+      {blog.likes} likes <button id="like-button" onClick={() => likeBlogWithNotification(blog)}>like</button> <br />
+      Added by {blog.user.name}<br />
+      <button id="remove-button" onClick={() => removeConfirm(blog)} style={showWhenCurrentUsersBlog}>remove</button>
     </div>
-  )
-}
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
+  )
 }
 
 export default Blog

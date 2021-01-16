@@ -10,7 +10,6 @@ const userReducer = (state = [], action) => {
 }
 
 export const initializeUsers = () => {
-  console.log('initusers')
   return async dispatch => {
     const users = await userService.getAll()
     dispatch({
