@@ -25,7 +25,6 @@ blogsRouter.post('/', async (request, response) => {
   if (body.title === undefined && body.url === undefined) {
     return response.status(400).end()
   }
-
   const user = await User.findById(decodedToken.id)
 
   const blog = new Blog({
@@ -70,18 +69,17 @@ blogsRouter.delete('/:id', async (request, response) => {
   }
 })
 
-blogsRouter.put('/:id', (request, response, next) => {
+blogsRouter.put('/:id', async (request, response, next) => {
   const body = request.body
 
-  const blog = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes === undefined ? 0 : body.likes,
-    user: body.user
+  const blog = await Blog.findById(request.params.id)
+
+  const newBlog = {
+    ...blog.toObject(),
+    ...body
   }
 
-  Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+  Blog.findByIdAndUpdate(request.params.id, newBlog, { new: true })
     .then(updatedBlog => {
       if (updatedBlog) {
         response.json(updatedBlog)

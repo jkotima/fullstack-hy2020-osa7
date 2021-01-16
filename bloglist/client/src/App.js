@@ -13,10 +13,10 @@ import User from './components/User'
 import Blog from './components/Blog'
 import Menu from './components/Menu'
 
-import blogService from './services/blogs'
-
 import { setNotification } from './reducers/notificationReducer'
 import { setUser } from './reducers/loggedInUserReducer'
+
+import blogService from './services/blogs'
 
 
 const App = () => {
@@ -39,6 +39,7 @@ const App = () => {
     }, 5000)
   }
 
+
   return (
     <div>
       <h2>blog app</h2>
@@ -58,7 +59,7 @@ const App = () => {
               <UserList />
             </Route>
             <Route path="/blogs/:id">
-              <Blog loggedInUser={loggedInUser} setTimedNotification={setTimedNotification} />
+              <Blog loggedInUser={loggedInUser} setTimedNotification={setTimedNotification}/>
             </Route>
             <Route path="/">
               <BlogList />

@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import Togglable from '../components/Togglable'
+
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { setUser } from '../reducers/loggedInUserReducer'
 
 const LoginForm = ({ setTimedNotification }) => {
+  const dispatch = useDispatch()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const dispatch = useDispatch()
+
+  useEffect( () => () => loginService.cancel(), [] )
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -28,8 +31,6 @@ const LoginForm = ({ setTimedNotification }) => {
       setTimedNotification('wrong username or password', true)
     }
   }
-  const handleUsernameChange = ({ target }) => setUsername(target.value)
-  const handlePasswordChange = ({ target }) => setPassword(target.value)
 
   return (
     <Togglable buttonLabel='login'>
@@ -42,7 +43,7 @@ const LoginForm = ({ setTimedNotification }) => {
             <input
               id="username"
               value={username}
-              onChange={handleUsernameChange}
+              onChange={({ target }) => setUsername(target.value)}
             />
           </div>
           <div>
@@ -51,7 +52,7 @@ const LoginForm = ({ setTimedNotification }) => {
               id="password"
               type="password"
               value={password}
-              onChange={handlePasswordChange}
+              onChange={({ target }) => setPassword(target.value)}
             />
           </div>
           <button id="login-button" type="submit">login</button>

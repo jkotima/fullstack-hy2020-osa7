@@ -7,7 +7,7 @@ const blogReducer = (state = [], action) => {
   case 'ADD_BLOG':
     return [...state, action.data]
   case 'UPDATE_BLOG':
-    return state.map(blog => blog.id === action.id
+    return state.map(blog => blog.id === action.data.id
       ? action.data
       : blog
     )
@@ -32,7 +32,7 @@ export const initializeBlogs = () => {
 export const addBlog = (blog) => {
   return async dispatch => {
     const returnedBlog = await blogService.create(blog)
-    returnedBlog.user = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
+    returnedBlog.user = blog.user
     dispatch({
       type: 'ADD_BLOG',
       data: returnedBlog
@@ -44,7 +44,18 @@ export const likeBlog = (blog) => {
   return async dispatch => {
     blog.likes++
     const returnedBlog = await blogService.update(blog)
+    returnedBlog.user = blog.user
+    dispatch({
+      type: 'UPDATE_BLOG',
+      data: returnedBlog
+    })
+  }
+}
 
+export const commentBlog = (blog, comment) => {
+  return async dispatch => {
+    const returnedBlog = await blogService.comment(blog, comment)
+    returnedBlog.user = blog.user
     dispatch({
       type: 'UPDATE_BLOG',
       data: returnedBlog
