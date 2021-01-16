@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/blogs/600301886a7de9506e6b53e3/comments
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWQiOiI1ZjBkOGY4OTdkZDM3NjZmNTg4Y2ZkNTMiLCJpYXQiOjE1OTQ3MjQzMDd9.gB8PXQHol6-eZm287MpXSo1BpdEN4BVpfHoX92gsKn4
+
+{
+  "comment":"tämä on toinen kommentti"
+}

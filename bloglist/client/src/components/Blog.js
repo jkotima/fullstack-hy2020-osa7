@@ -47,8 +47,15 @@ const Blog = ({ loggedInUser, setTimedNotification }) => {
       {blog.likes} likes <button id="like-button" onClick={() => likeBlogWithNotification(blog)}>like</button> <br />
       Added by {blog.user.name}<br />
       <button id="remove-button" onClick={() => removeConfirm(blog)} style={showWhenCurrentUsersBlog}>remove</button>
+      <div>
+        <h3>comments</h3>
+        <ul>
+          {blog.comments.map((comment, index) =>
+            <li key={index}>{comment}</li>
+          )}
+        </ul>
+      </div>
     </div>
-
   )
 }
 
