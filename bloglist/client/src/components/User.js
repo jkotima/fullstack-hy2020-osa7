@@ -1,20 +1,12 @@
 import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useRouteMatch } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { initializeUsers } from '../reducers/userReducer'
 
-const User = () => {
+const User = ({ user }) => {
   const dispatch = useDispatch()
-  const users = useSelector(state => state.users)
-  const userById = id => users.find(u => id === u.id)
-  const match = useRouteMatch('/users/:id')
-  const user = match
-    ? userById(match.params.id)
-    : null
-
   useEffect(() => {
     dispatch(initializeUsers())
-  }, [initializeUsers])
+  }, [])
 
   if (!user) {
     return null

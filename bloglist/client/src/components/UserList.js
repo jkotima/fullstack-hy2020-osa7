@@ -6,10 +6,9 @@ import { Link } from 'react-router-dom'
 
 const UserList = () => {
   const dispatch = useDispatch()
-
   useEffect(() => {
     dispatch(initializeUsers())
-  }, [initializeUsers])
+  }, [])
 
   const users = useSelector(state => state.users)
 

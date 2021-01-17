@@ -40,9 +40,15 @@ const App = () => {
   }
 
   const blogs = useSelector(state => state.blogs)
-  const match = useRouteMatch('/blogs/:id')
-  const blog = match
-    ? blogs.find(b => b.id === match.params.id)
+  const blogmatch = useRouteMatch('/blogs/:id')
+  const blog = blogmatch
+    ? blogs.find(b => b.id === blogmatch.params.id)
+    : null
+
+  const users = useSelector(state => state.users)
+  const usermatch = useRouteMatch('/users/:id')
+  const user = usermatch
+    ? users.find(u => u.id === usermatch.params.id)
     : null
 
   return (
@@ -58,7 +64,7 @@ const App = () => {
           <Menu />
           <Switch>
             <Route path="/users/:id">
-              <User />
+              <User user={user}/>
             </Route>
             <Route path="/users">
               <UserList />

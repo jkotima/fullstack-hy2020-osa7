@@ -17,7 +17,7 @@ const Blog = ({ blog, setTimedNotification }) => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
-  }, [initializeBlogs])
+  }, [])
 
   const removeConfirm = (blog) => {
     if (!window.confirm(`Remove blog ${blog.title}?`)) {

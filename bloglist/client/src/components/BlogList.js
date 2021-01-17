@@ -9,7 +9,7 @@ const blogList = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
-  }, [dispatch])
+  }, [])
 
   const blogStyle = {
     paddingTop: 10,
