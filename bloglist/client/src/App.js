@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  Switch, Route
+  Switch, Route, useRouteMatch
 } from 'react-router-dom'
 
 import BlogList from './components/BlogList'
@@ -39,6 +39,11 @@ const App = () => {
     }, 5000)
   }
 
+  const blogs = useSelector(state => state.blogs)
+  const match = useRouteMatch('/blogs/:id')
+  const blog = match
+    ? blogs.find(b => b.id === match.params.id)
+    : null
 
   return (
     <div>
@@ -50,7 +55,7 @@ const App = () => {
         ? <LoginForm setTimedNotification={setTimedNotification} />
         :
         <>
-          <Menu loggedInUser={loggedInUser} />
+          <Menu />
           <Switch>
             <Route path="/users/:id">
               <User />
@@ -59,7 +64,10 @@ const App = () => {
               <UserList />
             </Route>
             <Route path="/blogs/:id">
-              <Blog loggedInUser={loggedInUser} setTimedNotification={setTimedNotification}/>
+              <Blog
+                blog={blog}
+                setTimedNotification={setTimedNotification}
+              />
             </Route>
             <Route path="/">
               <BlogList />

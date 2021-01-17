@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
-import { useRouteMatch } from 'react-router-dom'
 import { initializeBlogs, commentBlog } from '../reducers/blogReducer'
 import { useHistory } from 'react-router-dom'
 
-const Blog = ({ loggedInUser, setTimedNotification }) => {
+const Blog = ({ blog, setTimedNotification }) => {
   const dispatch = useDispatch()
-  const blogs = useSelector(state => state.blogs)
-  const blogById = id => blogs.find(b => id === b.id)
-  const match = useRouteMatch('/blogs/:id')
-  const blog = match
-    ? blogById(match.params.id)
-    : null
-  let isCurrentUsersBlog = blog
+  const loggedInUser = useSelector(state => state.loggedInUser)
+
+  const isCurrentUsersBlog = blog
     ? blog.user.username === loggedInUser.username
     : false
   const showWhenCurrentUsersBlog = { display: isCurrentUsersBlog ? '' : 'none' }
