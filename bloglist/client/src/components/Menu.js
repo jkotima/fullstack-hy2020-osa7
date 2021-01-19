@@ -1,23 +1,61 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
 import Logout from '../components/Logout'
 import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+
+import { Paper, Tabs, Tab, Grid } from '@material-ui/core/'
+
+const LinkTab = (props) => {
+  const history = useHistory()
+  return (
+    <Tab
+      component="a"
+      onClick={(event) => {
+        event.preventDefault()
+        history.push(props.href)
+      }}
+      {...props}
+    />
+  )
+}
 
 const Menu = () => {
+  const [selectedItem, setSelectedItem] = useState(0)
   const loggedInUser = useSelector(state => state.loggedInUser)
+  useEffect(() => {
+    if (window.location.pathname.includes('/users')) {
+      setSelectedItem(1)
+    } else {
+      setSelectedItem(0)
+    }
+  }, [])
 
-  const menuStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    marginBottom: 5,
-    background: 'lightgrey'
+  const handleChange = (event, newValue) => {
+    setSelectedItem(newValue)
   }
+
   return (
-    <div style={menuStyle}>
-      <Link style={{ paddingRight: 5 }} to="/">blogs</Link>
-      <Link style={{ paddingRight: 5 }} to="/users">users</Link>
-      <Logout loggedInUser={loggedInUser} />
-    </div>
+    <Paper square>
+      <Grid container>
+        <Grid item xs={9}>
+          <Tabs
+            value={selectedItem}
+            indicatorColor="primary"
+            textColor="primary"
+            onChange={handleChange}
+            aria-label="disabled tabs example"
+          >
+            <LinkTab label="blogs" href="/" />
+            <LinkTab label="users" href="/users" />
+          </Tabs>
+        </Grid>
+        <Grid item xs={3} align={'right'}>
+          <div >
+            <Logout loggedInUser={loggedInUser} />
+          </div>
+        </Grid>
+      </Grid>
+    </Paper>
   )
 }
 

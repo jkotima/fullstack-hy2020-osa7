@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import { initializeBlogs, commentBlog } from '../reducers/blogReducer'
-import { useHistory } from 'react-router-dom'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, setTimedNotification }) => {
+import { useHistory } from 'react-router-dom'
+import { Button, IconButton } from '@material-ui/core/'
+import ThumbUpIcon from '@material-ui/icons/ThumbUp'
+import DeleteIcon from '@material-ui/icons/Delete'
+
+const Blog = ({ blog }) => {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(state => state.loggedInUser)
 
@@ -19,17 +24,17 @@ const Blog = ({ blog, setTimedNotification }) => {
     dispatch(initializeBlogs())
   }, [])
 
-  const removeConfirm = (blog) => {
+  const removeConfirm = async (blog) => {
     if (!window.confirm(`Remove blog ${blog.title}?`)) {
       return
     }
-    dispatch(removeBlog(blog))
+    await dispatch(removeBlog(blog))
+    dispatch(setNotification({ message: `Removed '${blog.title}'` }))
     history.push('/')
-    setTimedNotification(`Removed '${blog.title}'`)
   }
 
   const handleLike = (blog) => {
-    setTimedNotification(`Liked '${blog.title}'`)
+    dispatch(setNotification({ message: `Liked '${blog.title}'` }))
     dispatch(likeBlog(blog))
   }
 
@@ -37,7 +42,7 @@ const Blog = ({ blog, setTimedNotification }) => {
     event.preventDefault()
     dispatch(commentBlog(blog, comment))
     setComment('')
-    setTimedNotification(`Commented '${blog.title}'`)
+    dispatch(setNotification({ message: `Commented '${blog.title}'` }))
   }
   if (!blog) {
     return null
@@ -45,13 +50,30 @@ const Blog = ({ blog, setTimedNotification }) => {
 
   return (
     <div>
-      <h1>{blog.title} by {blog.author}</h1>
+
+      <h1>
+        {blog.title} by <i>{blog.author}</i>
+        <IconButton
+          aria-label="delete"
+          style={showWhenCurrentUsersBlog}
+          onClick={() => removeConfirm(blog)}
+        >
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </h1>
+
       <a href={blog.url}>{blog.url}</a><br />
-      {blog.likes} likes <button id="like-button" onClick={() => handleLike(blog)}>like</button> <br />
       Added by {blog.user.name}<br />
-      <button id="remove-button" onClick={() => removeConfirm(blog)} style={showWhenCurrentUsersBlog}>remove</button>
+
+      <Button
+        variant="contained"
+        size="small"
+        style={{ color: 'green' }}
+        onClick={() => handleLike(blog)}>
+        <ThumbUpIcon /> {blog.likes}
+      </Button>
       <div>
-        <h3>comments</h3>
+        <h3>Comments</h3>
         <form onSubmit={handleComment}>
           <input id="commentField" value={comment} onChange={(e) => setComment(e.target.value)} />
           <button id="login-button" type="submit">add comment</button>
@@ -65,5 +87,4 @@ const Blog = ({ blog, setTimedNotification }) => {
     </div>
   )
 }
-
 export default Blog

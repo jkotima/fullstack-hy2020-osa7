@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   Switch, Route, useRouteMatch
 } from 'react-router-dom'
+import Container from '@material-ui/core/Container'
 
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
@@ -34,9 +35,6 @@ const App = () => {
 
   const setTimedNotification = (message, error = false) => {
     dispatch(setNotification({ message, error }))
-    setTimeout(() => {
-      dispatch(setNotification(null))
-    }, 5000)
   }
 
   const blogs = useSelector(state => state.blogs)
@@ -52,7 +50,7 @@ const App = () => {
     : null
 
   return (
-    <div>
+    <Container>
       <h2>blog app</h2>
 
       <Notification />
@@ -72,17 +70,16 @@ const App = () => {
             <Route path="/blogs/:id">
               <Blog
                 blog={blog}
-                setTimedNotification={setTimedNotification}
               />
             </Route>
             <Route path="/">
-              <BlogList />
               <BlogForm />
+              <BlogList />
             </Route>
           </Switch>
         </>
       }
-    </div>
+    </Container>
   )
 }
 

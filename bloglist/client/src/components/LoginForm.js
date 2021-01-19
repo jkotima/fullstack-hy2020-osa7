@@ -5,8 +5,9 @@ import Togglable from '../components/Togglable'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { setUser } from '../reducers/loggedInUserReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const LoginForm = ({ setTimedNotification }) => {
+const LoginForm = () => {
   const dispatch = useDispatch()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -28,7 +29,7 @@ const LoginForm = ({ setTimedNotification }) => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setTimedNotification('wrong username or password', true)
+      dispatch(setNotification({ message: 'Wrong username or password', error: true }))
     }
   }
 

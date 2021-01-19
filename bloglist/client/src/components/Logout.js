@@ -1,13 +1,20 @@
 import React from 'react'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import { IconButton } from '@material-ui/core/'
 
 const Logout = ({ loggedInUser }) => (
   <>
-    {loggedInUser.name} logged in
-    <button onClick={() => {
-      window.localStorage.removeItem('loggedBlogappUser')
-      window.location.reload()
-    }
-    }>logout</button>
+    <IconButton
+      aria-label="logout"
+      onClick={() => {
+        window.localStorage.removeItem('loggedBlogappUser')
+        window.location.reload()
+      }}
+      size='small'
+    >
+      <ExitToAppIcon fontSize="small" />
+      log out ({loggedInUser.name})
+    </IconButton>
   </>
 )
 

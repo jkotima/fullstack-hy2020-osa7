@@ -3,6 +3,17 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { initializeUsers } from '../reducers/userReducer'
 import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper
+} from '@material-ui/core'
 
 const UserList = () => {
   const dispatch = useDispatch()
@@ -11,30 +22,31 @@ const UserList = () => {
   }, [])
 
   const users = useSelector(state => state.users)
+  const history = useHistory()
 
   return (
-    <div>
-      <h2>Users</h2>
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>blogs created</th>
-          </tr>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow style={{ backgroundColor: 'lightgray' }}>
+            <TableCell>Name</TableCell>
+            <TableCell>Blogs created</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {users.map(user =>
-            <tr key={user.id}>
-              <td>
-                <Link to={`/users/${user.id}`}>
-                  {user.name}
-                </Link>
-              </td>
-              <td>{user.blogs.length}</td>
-            </tr>
+            <TableRow hover key={user.id} onClick={() => history.push(`/users/${user.id}`)}>
+              <TableCell>
+                <Link to={`/users/${user.id}`}>{user.name}</Link>
+              </TableCell>
+              <TableCell>
+                {user.blogs.length}
+              </TableCell>
+            </TableRow>
           )}
-        </tbody>
-      </table>
-
-    </div>
+        </TableBody>
+      </Table>
+    </TableContainer>
   )
 }
 
