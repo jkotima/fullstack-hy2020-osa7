@@ -3,7 +3,6 @@ import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import { useSelector, useDispatch } from 'react-redux'
 import { initializeBlogs, commentBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
-
 import { useHistory } from 'react-router-dom'
 import { Button, IconButton } from '@material-ui/core/'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp'
@@ -75,7 +74,9 @@ const Blog = ({ blog }) => {
       <div>
         <h3>Comments</h3>
         <form onSubmit={handleComment}>
-          <input id="commentField" value={comment} onChange={(e) => setComment(e.target.value)} />
+          <input id="commentField"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)} />
           <button id="login-button" type="submit">add comment</button>
         </form>
         <ul>
